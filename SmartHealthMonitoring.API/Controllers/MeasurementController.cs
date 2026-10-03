@@ -1,6 +1,6 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SmartHealthMonitoring.Application.DTOs;
-using SmartHealthMonitoring.Application.Interfaces;
+using SmartHealthMonitoring.Application.Features.Measurements.Commands.CreateReading;
 
 namespace SmartHealthMonitoring.API.Controllers;
 
@@ -8,26 +8,28 @@ namespace SmartHealthMonitoring.API.Controllers;
 [ApiController]
 public class MeasurementController : ControllerBase
 {
-    private readonly IMeasurementService _measurementService;
-    private readonly IPatientRepository _patientRepository;
+    private readonly IMediator _mediator;
 
-    public MeasurementController(IMeasurementService measurementService, IPatientRepository patientRepository)
+    public MeasurementController(IMediator mediator)
     {
-        _measurementService = measurementService;
-        _patientRepository = patientRepository;
+        _mediator = mediator;
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateReading([FromBody] ReadingDto readingDto)
+    public async Task<IActionResult> CreateReading([FromBody] CreateReadingCommands command)
     {
-        var patientExists = await _patientRepository.GetOne(readingDto.PatientId);
-
-        if (patientExists == null)
+        if (!ModelState.IsValid)
         {
-            return BadRequest("Patient does not exist.");
+            return BadRequest(ModelState);
         }
 
-        var result = await _measurementService.CreateReading(readingDto);
+        var result = await _mediator.Send(command);
+
+        if (result == null)
+        {
+            return BadRequest(new { Message = $"Patient with ID {command.PatientId} does not exist." });
+        }
+
         return Ok(result);
     }
 }
