@@ -23,5 +23,15 @@ namespace SmartHealthMonitoring.Infrastructure.Repositories
         {
             return await _context.Patients.FindAsync(id, cancellationToken);
         }
+
+        public async Task AddAsync(Patient patient, CancellationToken cancellationToken = default)
+        {
+            await _context.Patients.AddAsync(patient, cancellationToken);
+        }
+
+        public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            await _context.SaveChangesAsync(cancellationToken);
+        }
     }
 }

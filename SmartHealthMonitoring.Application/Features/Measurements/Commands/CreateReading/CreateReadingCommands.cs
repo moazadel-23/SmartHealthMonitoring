@@ -4,7 +4,7 @@ using SmartHealthMonitoring.Application.DTOs;
 
 namespace SmartHealthMonitoring.Application.Features.Measurements.Commands.CreateReading;
 
-public class CreateReadingCommands : IRequest<MeasurementResponseDto?>
+public class CreateReadingCommands : IRequest<bool?>
 {
     [Range(1, int.MaxValue, ErrorMessage = "PatientId must be greater than 0.")]
     public int PatientId { get; set; }

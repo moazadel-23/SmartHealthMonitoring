@@ -10,5 +10,7 @@ namespace SmartHealthMonitoring.Application.Interfaces
     public interface IPatientRepository
     {
         Task<Patient> GetOne(int id, CancellationToken cancellationToken = default);
+        Task AddAsync(Patient patient, CancellationToken cancellationToken = default);
+        Task SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

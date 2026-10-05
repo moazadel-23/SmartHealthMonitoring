@@ -1,22 +1,22 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SmartHealthMonitoring.Application.Features.Measurements.Commands.CreateReading;
+using SmartHealthMonitoring.Application.Features.Patients.Commands.CreatePatient;
 
 namespace SmartHealthMonitoring.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class MeasurementController : ControllerBase
+public class PatientController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public MeasurementController(IMediator mediator)
+    public PatientController(IMediator mediator)
     {
         _mediator = mediator;
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateReading([FromBody] CreateReadingCommands command)
+    public async Task<IActionResult> CreatePatient([FromBody] CreatePatientCommands command)
     {
         if (!ModelState.IsValid)
         {
@@ -25,14 +25,14 @@ public class MeasurementController : ControllerBase
 
         var result = await _mediator.Send(command);
 
-        if (result == null)
+        if (!result)
         {
-            return BadRequest(new { Message = $"Patient with ID {command.PatientId} does not exist." });
+            return BadRequest(new { Message = $"Doctor with ID {command.DoctorId} does not exist." });
         }
 
         return Ok(new
         {
-            msg = "Measurement Created Successfully",
+            msg = "Patient created successfully",
         });
     }
 }
