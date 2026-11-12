@@ -55,7 +55,7 @@ namespace SmartHealthMonitoring.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Measurements",
+                name: "HeartRates",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -67,9 +67,9 @@ namespace SmartHealthMonitoring.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Measurements", x => x.Id);
+                    table.PrimaryKey("PK_HeartRates", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Measurements_Patients_PatientId",
+                        name: "FK_HeartRates_Patients_PatientId",
                         column: x => x.PatientId,
                         principalTable: "Patients",
                         principalColumn: "Id",
@@ -77,8 +77,8 @@ namespace SmartHealthMonitoring.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Measurements_PatientId",
-                table: "Measurements",
+                name: "IX_HeartRates_PatientId",
+                table: "HeartRates",
                 column: "PatientId");
 
             migrationBuilder.CreateIndex(
@@ -91,7 +91,7 @@ namespace SmartHealthMonitoring.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Measurements");
+                name: "HeartRates");
 
             migrationBuilder.DropTable(
                 name: "Patients");

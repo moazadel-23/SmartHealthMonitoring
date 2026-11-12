@@ -13,7 +13,10 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Doctor> Doctors => Set<Doctor>();
     public DbSet<Patient> Patients => Set<Patient>();
-    public DbSet<Measurement> Measurements => Set<Measurement>();
+    public DbSet<HeartRate> HeartRates => Set<HeartRate>();
+    public DbSet<Nurse> Nurses => Set<Nurse>();
+    public DbSet<Temperature> Temperatures => Set<Temperature>();
+    public DbSet<CurrentPatientSelection> CurrentPatientSelections => Set<CurrentPatientSelection>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

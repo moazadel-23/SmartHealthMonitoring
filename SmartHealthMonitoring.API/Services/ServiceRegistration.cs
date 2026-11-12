@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using SmartHealthMonitoring.Application.Features.Measurements.Commands.CreateReading;
+using Microsoft.OpenApi.Models;
+using SmartHealthMonitoring.Application;
 using SmartHealthMonitoring.Infrastructure;
 
 namespace SmartHealthMonitoring.API.Services;
@@ -11,14 +12,38 @@ public static class ServiceRegistration
         // 1. Add Infrastructure Services (DbContext & Repositories)
         services.AddInfrastructureServices(configuration);
 
-        // 2. Register MediatR for Application layer
-        services.AddMediatR(cfg =>
-            cfg.RegisterServicesFromAssembly(typeof(CreateReadingCommands).Assembly));
+        // 2. Add Application Services (MediatR & CurrentPatient validation pipeline)
+        services.AddApplicationServices();
 
         // 3. Register OpenAPI / Scalar
-        services.AddOpenApi();
+        services.AddOpenApi(options =>
+        {
+            options.AddDocumentTransformer((document, context, cancellationToken) =>
+            {
+                document.Servers = new List<OpenApiServer>
+                {
+                    new() { Url = "http://localhost:5008", Description = "Local Server" }
+                };
+                return Task.CompletedTask;
+            });
+        });
 
-        // 4. Register Controllers & Custom Model Validation Response Format
+        // 4. Register CORS Policy for Frontend Integration
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowFrontend", policy =>
+            {
+                var allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+                                     ?? new[] { "http://localhost:5173", "http://localhost:4173", "http://localhost:3000", "http://127.0.0.1:3000" };
+
+                policy.WithOrigins(allowedOrigins)
+                      .AllowAnyMethod()
+                      .AllowAnyHeader()
+                      .AllowCredentials();
+            });
+        });
+
+        // 5. Register Controllers & Custom Model Validation Response Format
         services.AddCustomControllers();
 
         return services;

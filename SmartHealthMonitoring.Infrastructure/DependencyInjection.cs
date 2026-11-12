@@ -17,9 +17,12 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(connectionString));
 
-        services.AddScoped<IMeasurementRepository, MeasurementRepository>();
+        services.AddScoped<ICurrentPatientRepository, CurrentPatientRepository>();
+        services.AddScoped<IHeartRateRepository, HeartRateRepository>();
+        services.AddScoped<ITemperatureRepository, TemperatureRepository>();
         services.AddScoped<IPatientRepository, PatientRepository>();
         services.AddScoped<IDoctorRepository, DoctorRepository>();
+        services.AddScoped<INurseRepository, NurseRepository>();
 
         return services;
     }

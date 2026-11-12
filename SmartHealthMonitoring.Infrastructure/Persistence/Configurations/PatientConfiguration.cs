@@ -27,8 +27,8 @@ public class PatientConfiguration : IEntityTypeConfiguration<Patient>
         builder.Property(p => p.Phone)
             .HasMaxLength(20);
 
-        // One Patient has many Measurements
-        builder.HasMany(p => p.Measurements)
+        // One Patient has many HeartRate readings
+        builder.HasMany(p => p.HeartRates)
             .WithOne(m => m.Patient)
             .HasForeignKey(m => m.PatientId)
             .OnDelete(DeleteBehavior.Cascade);

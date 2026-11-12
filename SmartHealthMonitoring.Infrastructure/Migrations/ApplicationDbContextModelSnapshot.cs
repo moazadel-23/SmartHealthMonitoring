@@ -22,6 +22,24 @@ namespace SmartHealthMonitoring.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("SmartHealthMonitoring.Domain.Entities.CurrentPatientSelection", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("SelectedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("CurrentPatientSelections");
+                });
+
             modelBuilder.Entity("SmartHealthMonitoring.Domain.Entities.Doctor", b =>
                 {
                     b.Property<int>("Id")
@@ -60,7 +78,7 @@ namespace SmartHealthMonitoring.Infrastructure.Migrations
                     b.ToTable("Doctors");
                 });
 
-            modelBuilder.Entity("SmartHealthMonitoring.Domain.Entities.Measurement", b =>
+            modelBuilder.Entity("SmartHealthMonitoring.Domain.Entities.HeartRate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -68,8 +86,9 @@ namespace SmartHealthMonitoring.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("HeartRate")
-                        .HasColumnType("float");
+                    b.Property<double>("HeartRateValue")
+                        .HasColumnType("float")
+                        .HasColumnName("HeartRate");
 
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
@@ -84,7 +103,50 @@ namespace SmartHealthMonitoring.Infrastructure.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Measurements");
+                    b.ToTable("HeartRates", (string)null);
+                });
+
+            modelBuilder.Entity("SmartHealthMonitoring.Domain.Entities.Nurse", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Assignment")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("FName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("LName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Specialization")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Nurses");
                 });
 
             modelBuilder.Entity("SmartHealthMonitoring.Domain.Entities.Patient", b =>
@@ -136,10 +198,45 @@ namespace SmartHealthMonitoring.Infrastructure.Migrations
                     b.ToTable("Patients");
                 });
 
-            modelBuilder.Entity("SmartHealthMonitoring.Domain.Entities.Measurement", b =>
+            modelBuilder.Entity("SmartHealthMonitoring.Domain.Entities.Temperature", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("RecordedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("TempValue")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("Temperatures", (string)null);
+                });
+
+            modelBuilder.Entity("SmartHealthMonitoring.Domain.Entities.CurrentPatientSelection", b =>
                 {
                     b.HasOne("SmartHealthMonitoring.Domain.Entities.Patient", "Patient")
-                        .WithMany("Measurements")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("SmartHealthMonitoring.Domain.Entities.HeartRate", b =>
+                {
+                    b.HasOne("SmartHealthMonitoring.Domain.Entities.Patient", "Patient")
+                        .WithMany("HeartRates")
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -158,6 +255,17 @@ namespace SmartHealthMonitoring.Infrastructure.Migrations
                     b.Navigation("Doctor");
                 });
 
+            modelBuilder.Entity("SmartHealthMonitoring.Domain.Entities.Temperature", b =>
+                {
+                    b.HasOne("SmartHealthMonitoring.Domain.Entities.Patient", "Patient")
+                        .WithMany("Temperatures")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+                });
+
             modelBuilder.Entity("SmartHealthMonitoring.Domain.Entities.Doctor", b =>
                 {
                     b.Navigation("Patients");
@@ -165,7 +273,9 @@ namespace SmartHealthMonitoring.Infrastructure.Migrations
 
             modelBuilder.Entity("SmartHealthMonitoring.Domain.Entities.Patient", b =>
                 {
-                    b.Navigation("Measurements");
+                    b.Navigation("HeartRates");
+
+                    b.Navigation("Temperatures");
                 });
 #pragma warning restore 612, 618
         }

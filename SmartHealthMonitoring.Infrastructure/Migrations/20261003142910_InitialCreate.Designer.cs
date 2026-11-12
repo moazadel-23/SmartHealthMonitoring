@@ -63,7 +63,7 @@ namespace SmartHealthMonitoring.Infrastructure.Migrations
                     b.ToTable("Doctors");
                 });
 
-            modelBuilder.Entity("SmartHealthMonitoring.Domain.Entities.Measurement", b =>
+            modelBuilder.Entity("SmartHealthMonitoring.Domain.Entities.HeartRate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -71,8 +71,9 @@ namespace SmartHealthMonitoring.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("HeartRate")
-                        .HasColumnType("float");
+                    b.Property<double>("HeartRateValue")
+                        .HasColumnType("float")
+                        .HasColumnName("HeartRate");
 
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
@@ -87,7 +88,7 @@ namespace SmartHealthMonitoring.Infrastructure.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Measurements");
+                    b.ToTable("HeartRates");
                 });
 
             modelBuilder.Entity("SmartHealthMonitoring.Domain.Entities.Patient", b =>
@@ -139,10 +140,10 @@ namespace SmartHealthMonitoring.Infrastructure.Migrations
                     b.ToTable("Patients");
                 });
 
-            modelBuilder.Entity("SmartHealthMonitoring.Domain.Entities.Measurement", b =>
+            modelBuilder.Entity("SmartHealthMonitoring.Domain.Entities.HeartRate", b =>
                 {
                     b.HasOne("SmartHealthMonitoring.Domain.Entities.Patient", "Patient")
-                        .WithMany("Measurements")
+                        .WithMany("HeartRates")
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -168,7 +169,7 @@ namespace SmartHealthMonitoring.Infrastructure.Migrations
 
             modelBuilder.Entity("SmartHealthMonitoring.Domain.Entities.Patient", b =>
                 {
-                    b.Navigation("Measurements");
+                    b.Navigation("HeartRates");
                 });
 #pragma warning restore 612, 618
         }

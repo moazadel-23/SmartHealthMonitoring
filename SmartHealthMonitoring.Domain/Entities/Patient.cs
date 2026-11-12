@@ -17,5 +17,6 @@ public class Patient
     public int DoctorId { get; set; }
 
     public Doctor Doctor { get; set; } = null!;
-    public ICollection<Measurement> Measurements { get; set; } = new List<Measurement>();
+    public ICollection<HeartRate> HeartRates { get; set; } = new List<HeartRate>();
+    public ICollection<Temperature> Temperatures { get; set; } = new List<Temperature>();
 }
